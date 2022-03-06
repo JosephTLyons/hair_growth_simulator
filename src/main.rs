@@ -1,6 +1,6 @@
 use rand::distributions::{Bernoulli, Distribution};
 use rand::Rng;
-use std::{thread, time};
+use std::{fmt, thread, time};
 
 struct Hair {
     strand_lengths: Vec<usize>,
@@ -51,8 +51,8 @@ impl Hair {
     }
 }
 
-impl std::fmt::Display for Hair {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl fmt::Display for Hair {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         for strand_length in &self.strand_lengths {
             writeln!(f, "{}", "-".repeat(*strand_length))?
         }
