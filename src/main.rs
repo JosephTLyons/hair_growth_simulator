@@ -8,10 +8,7 @@ struct Hair {
 
 impl Hair {
     fn new() -> Hair {
-        let strand_lengths: Vec<usize> = (0..=50)
-            .map(|_| rand::thread_rng().gen_range(20..51))
-            .collect();
-
+        let strand_lengths: Vec<usize> = vec![1; 50];
         Hair { strand_lengths }
     }
 
@@ -26,18 +23,18 @@ impl Hair {
     }
 
     /// Cut all hairs to a single target length
-    fn cut(&mut self, target_strang_length: usize) {
+    fn cut(&mut self, target_strand_length: usize) {
         // Indexing so we can mutate the elements of the vector
         for i in 0..self.strand_lengths.len() {
-            if self.strand_lengths[i] > target_strang_length {
-                self.strand_lengths[i] = target_strang_length
+            if self.strand_lengths[i] > target_strand_length {
+                self.strand_lengths[i] = target_strand_length
             }
         }
     }
 
     /// Break random hairs to a random length (simulates hairs breaking when combing / accidentally ripping out)
     fn break_hairs(&mut self) {
-        let bernoulli_distribution = Bernoulli::new(0.1).unwrap();
+        let bernoulli_distribution = Bernoulli::new(0.002).unwrap();
         let mut rng = rand::thread_rng();
 
         // Indexing so we can mutate the elements of the vector
@@ -60,33 +57,48 @@ impl fmt::Display for Hair {
     }
 }
 
+fn get_named_divider(name: &str, symbol: &str, length: usize) -> String {
+    let header = format!("{name} ");
+    let rest_length = length - header.len();
+    let divider = symbol.repeat(rest_length);
+
+    format!("{header}{divider}")
+}
+
 fn main() {
     let mut hair = Hair::new();
     println!("{hair}");
     println!();
 
     let sleep_duration = time::Duration::from_millis(200);
-    let divider = "~".repeat(50);
+
+    let divider_symbol = "~";
+    let target_strand_length = 60;
+    let grow_divider = get_named_divider("grow", divider_symbol, target_strand_length);
+    let cut_divider = get_named_divider("cut", divider_symbol, target_strand_length);
+    let break_divider = get_named_divider("break", divider_symbol, target_strand_length);
 
     loop {
+        for _ in 0..15 {
+            thread::sleep(sleep_duration);
+
+            hair.grow(2);
+            println!("{}", grow_divider);
+            println!();
+            println!("{hair}");
+
+            thread::sleep(sleep_duration);
+
+            hair.break_hairs();
+            println!("{}", break_divider);
+            println!();
+            println!("{hair}");
+        }
+
         thread::sleep(sleep_duration);
 
-        hair.grow(15);
-        println!("{divider} grow {divider}");
-        println!();
-        println!("{hair}");
-
-        thread::sleep(sleep_duration);
-
-        hair.cut(60);
-        println!("{divider} cut {divider}");
-        println!();
-        println!("{hair}");
-
-        thread::sleep(sleep_duration);
-
-        hair.break_hairs();
-        println!("{divider} break {divider}");
+        hair.cut(target_strand_length);
+        println!("{}", cut_divider);
         println!();
         println!("{hair}");
     }
