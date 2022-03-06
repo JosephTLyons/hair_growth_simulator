@@ -37,7 +37,6 @@ impl Hair {
 
     /// Break random hairs to a random length (simulates hairs breaking when combing / accidentally ripping out)
     fn break_hairs(&mut self) {
-        // TODO: Probably only need to use one of the random generators
         let bernoulli_distribution = Bernoulli::new(0.1).unwrap();
         let mut rng = rand::thread_rng();
 
