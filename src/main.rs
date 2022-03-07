@@ -20,7 +20,6 @@ impl Hair {
 
     /// Grow all hairs
     fn grow(&mut self, growth_limit: usize) {
-        // Indexing so we can mutate the elements of the vector
         for i in 0..self.strand_lengths.len() {
             self.strand_lengths[i] += self.rng.gen_range(0..=growth_limit);
         }
@@ -28,7 +27,6 @@ impl Hair {
 
     /// Cut all hairs to a single target length
     fn cut(&mut self, target_strand_length: usize) {
-        // Indexing so we can mutate the elements of the vector
         for i in 0..self.strand_lengths.len() {
             if self.strand_lengths[i] > target_strand_length {
                 self.strand_lengths[i] = target_strand_length
@@ -40,7 +38,6 @@ impl Hair {
     fn break_hairs(&mut self) {
         let bernoulli_distribution = Bernoulli::new(0.002).unwrap();
 
-        // Indexing so we can mutate the elements of the vector
         for i in 0..self.strand_lengths.len() {
             let should_break_hair = bernoulli_distribution.sample(&mut rand::thread_rng());
 
