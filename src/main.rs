@@ -1,24 +1,28 @@
-use rand::distributions::{Bernoulli, Distribution};
-use rand::Rng;
+use rand::{
+    distributions::{Bernoulli, Distribution},
+    rngs::ThreadRng,
+    Rng,
+};
 use std::{fmt, thread, time};
 
 struct Hair {
     strand_lengths: Vec<usize>,
+    rng: ThreadRng,
 }
 
 impl Hair {
     fn new() -> Hair {
-        let strand_lengths: Vec<usize> = vec![1; 50];
-        Hair { strand_lengths }
+        Hair {
+            strand_lengths: vec![1; 50],
+            rng: rand::thread_rng(),
+        }
     }
 
     /// Grow all hairs
-    fn grow(&mut self, growth_value: usize) {
-        let mut rng = rand::thread_rng();
-
+    fn grow(&mut self, growth_limit: usize) {
         // Indexing so we can mutate the elements of the vector
         for i in 0..self.strand_lengths.len() {
-            self.strand_lengths[i] += (growth_value as f32 * rng.gen::<f32>()) as usize;
+            self.strand_lengths[i] += self.rng.gen_range(0..=growth_limit);
         }
     }
 
@@ -35,14 +39,13 @@ impl Hair {
     /// Break random hairs to a random length (simulates hairs breaking when combing / accidentally ripping out)
     fn break_hairs(&mut self) {
         let bernoulli_distribution = Bernoulli::new(0.002).unwrap();
-        let mut rng = rand::thread_rng();
 
         // Indexing so we can mutate the elements of the vector
         for i in 0..self.strand_lengths.len() {
             let should_break_hair = bernoulli_distribution.sample(&mut rand::thread_rng());
 
             if should_break_hair {
-                self.strand_lengths[i] = (self.strand_lengths[i] as f32 * rng.gen::<f32>()) as usize
+                self.strand_lengths[i] -= self.rng.gen_range(0..=self.strand_lengths[i]);
             }
         }
     }
@@ -53,6 +56,7 @@ impl fmt::Display for Hair {
         for strand_length in &self.strand_lengths {
             writeln!(f, "{}", "-".repeat(*strand_length))?
         }
+
         Ok(())
     }
 }
