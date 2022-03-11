@@ -34,9 +34,29 @@ impl Hair {
         }
     }
 
-    fn break_hairs(&mut self) {
-        let bernoulli_distribution = Bernoulli::new(0.002).unwrap();
     /// Cut all strands to the average strand length
+    fn cut_to_avergae(&mut self) {
+        // Some conversions here that may be avoidable
+        let mut strand_lengths_f64: Vec<f64> =
+            self.strand_lengths.iter().map(|a| *a as f64).collect();
+
+        let outlier_identifier =
+            outliers::OutlierIdentifier::new(strand_lengths_f64.clone(), false);
+
+        // Filter out extremely small or long values that might dramatically affect the averege
+        if let Ok(results_tuple) = outlier_identifier.get_outliers() {
+            strand_lengths_f64 = results_tuple.1;
+        }
+
+        let target_strand_length =
+            (strand_lengths_f64.iter().sum::<f64>() / strand_lengths_f64.len() as f64) as usize;
+
+        self.cut(target_strand_length);
+    }
+
+    /// Break random strands to a random length (simulates strands breaking when combing / accidentally ripping out)
+    fn break_strands(&mut self) {
+        let bernoulli_distribution = Bernoulli::new(0.003).unwrap();
 
         for i in 0..self.strand_lengths.len() {
             let should_break_hair = bernoulli_distribution.sample(&mut rand::thread_rng());
