@@ -35,7 +35,7 @@ impl Hair {
     }
 
     /// Cut all strands to the average strand length
-    fn cut_to_avergae(&mut self) {
+    fn cut_to_average(&mut self) {
         // Some conversions here that may be avoidable
         let mut strand_lengths_f64: Vec<f64> =
             self.strand_lengths.iter().map(|a| *a as f64).collect();
@@ -104,7 +104,7 @@ fn main() {
 
         thread::sleep(sleep_duration);
 
-        hair.cut_to_avergae();
+        hair.cut_to_average();
         println!("cut");
         println!();
         println!("{hair}");
