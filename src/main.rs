@@ -18,14 +18,14 @@ impl Hair {
         }
     }
 
-    /// Grow all hairs
+    /// Grow all strands
     fn grow(&mut self, growth_limit: usize) {
         for i in 0..self.strand_lengths.len() {
             self.strand_lengths[i] += self.rng.gen_range(0..=growth_limit);
         }
     }
 
-    /// Cut all hairs to a single target length
+    /// Cut all strands to a single target length
     fn cut(&mut self, target_strand_length: usize) {
         for i in 0..self.strand_lengths.len() {
             if self.strand_lengths[i] > target_strand_length {
@@ -34,9 +34,9 @@ impl Hair {
         }
     }
 
-    /// Break random hairs to a random length (simulates hairs breaking when combing / accidentally ripping out)
     fn break_hairs(&mut self) {
         let bernoulli_distribution = Bernoulli::new(0.002).unwrap();
+    /// Cut all strands to the average strand length
 
         for i in 0..self.strand_lengths.len() {
             let should_break_hair = bernoulli_distribution.sample(&mut rand::thread_rng());
