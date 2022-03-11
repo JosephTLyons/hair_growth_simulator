@@ -78,14 +78,6 @@ impl fmt::Display for Hair {
     }
 }
 
-fn get_named_divider(name: &str, symbol: &str, length: usize) -> String {
-    let header = format!("{name} ");
-    let rest_length = length - header.len();
-    let divider = symbol.repeat(rest_length);
-
-    format!("{header}{divider}")
-}
-
 fn main() {
     let mut hair = Hair::new();
     println!("{hair}");
@@ -93,33 +85,27 @@ fn main() {
 
     let sleep_duration = time::Duration::from_millis(200);
 
-    let divider_symbol = "~";
-    let target_strand_length = 60;
-    let grow_divider = get_named_divider("grow", divider_symbol, target_strand_length);
-    let cut_divider = get_named_divider("cut", divider_symbol, target_strand_length);
-    let break_divider = get_named_divider("break", divider_symbol, target_strand_length);
-
     loop {
         for _ in 0..15 {
             thread::sleep(sleep_duration);
 
             hair.grow(2);
-            println!("{}", grow_divider);
+            println!("grow");
             println!();
             println!("{hair}");
 
             thread::sleep(sleep_duration);
 
-            hair.break_hairs();
-            println!("{}", break_divider);
+            hair.break_strands();
+            println!("break");
             println!();
             println!("{hair}");
         }
 
         thread::sleep(sleep_duration);
 
-        hair.cut(target_strand_length);
-        println!("{}", cut_divider);
+        hair.cut_to_avergae();
+        println!("cut");
         println!();
         println!("{hair}");
     }
